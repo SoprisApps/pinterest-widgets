@@ -904,20 +904,33 @@
             return $.f.buildOne(template);
           },
           embedGrid: function (r, options) {
-            var p, template, colHeight, i, pin, minValue, minIndex, j, buttonUrl, buttonLog, boardUrl, str, tt, labelClass, labelContent, label;
+            var p, template, colHeight, i, pin, minValue, minIndex, j, buttonUrl, buttonLog, boardUrl, str, tt, labelClass, labelContent, label, bodyHeight;
             if (r.data) {
               p = r.data;
               if (!options.columns || options.columns < 1 || options.columns > 10) {
                 options.columns = 5;
               }
-              if (!options.height || options.height < 200 || options.height > 1000) {
+
+              if (!options.height || options.height > 1000) {
                 options.height = 340;
+              } else if (options.height < 150) {
+                options.hideHeader = true;
+                options.hideFooter = true;
+              } else if (options.height < 200) {
+                options.hideFooter = true;
               }
+
               template = {
                 'className': 'embed_grid c' + options.columns,
                 'log': 'embed_grid',
-                'href': options.pinterest,
-                'hd': {
+                'href': options.pinterest
+              }
+
+              bodyHeight = options.height;
+
+              if (options.hideHeader !== true) {
+                bodyHeight -= 55;
+                template.hd = {
                   'href': p.user.profile_url,
                   'img': {
                     'backgroundImage': p.user.image_small_url.replace(/_30.jpg/, '_60.jpg')
@@ -925,17 +938,24 @@
                   'pinner': {
                     'text': p.user.full_name
                   }
-                },
-                'bd': {
-                  'height': (options.height - 110)+ 'px',
-                  'ct': []
-                },
-                'ft': {
+                };
+              }
+
+              template.bd = {
+                'height': bodyHeight + 'px',
+                'ct': []
+              };
+
+              if (options.hideFooter !== true) {
+                bodyHeight -= 55;
+                template.ft = {
                   'log':  'embed_user_ft',
                   'href': p.user.profile_url + 'pins/follow/?guid=' + $.v.guid,
                   'button': {}
                 }
               }
+
+              template.bd.height = bodyHeight + 'px';
 
               if (options.noscroll) {
                 template.className = template.className + ' noscroll';
@@ -978,13 +998,18 @@
                 // it's a board
                 template.className = template.className + ' board';
                 boardUrl = options.pinterest + p.board.url;
-                template.hd.board = {
-                  'text': p.board.name,
-                  'href': boardUrl
+                if (options.hideHeader !== true) {
+                  template.hd.board = {
+                    'text': p.board.name,
+                    'href': boardUrl
+                  }
                 }
+
                 buttonUrl = boardUrl + 'follow/?guid=' + $.v.guid;
                 buttonLog = 'embed_board_ft';
-                template.ft.href = buttonUrl;
+                if (options.hideFooter !== true) {
+                  template.ft.href = buttonUrl;
+                }
                 $.v.countBoard = $.v.countBoard + 1;
               } else {
                 // it's a profile
@@ -1006,9 +1031,11 @@
 
               label = '<span data-pin-href="' + buttonUrl + '/follow/?guid=' + $.v.guid + '" data-pin-log="' + buttonLog + '" class="' + $.a.k + '_logo"></span><span data-pin-href="' + buttonUrl + '/follow/?guid=' + $.v.guid + '" data-pin-log="' + buttonLog + '" class="' + $.a.k + '_string">'
 
-              template.ft.button.label = {
-                'addClass': labelClass,
-                'text': labelContent
+              if (options.hideFooter !== true) {
+                template.ft.button.label = {
+                  'addClass': labelClass,
+                  'text': labelContent
+                }
               }
 
               return $.f.buildOne(template);
