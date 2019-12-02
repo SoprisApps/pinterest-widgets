@@ -1,0 +1,19 @@
+{
+  "name": "pinterest-widgets",
+  "version": "2.0.0-sopris1",
+  "description": "widgets =======",
+  "main": "pinit.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SoprisApps/pinterest-widgets.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SoprisApps/pinterest-widgets/issues"
+  },
+  "homepage": "https://github.com/SoprisApps/pinterest-widgets#readme"
+}
